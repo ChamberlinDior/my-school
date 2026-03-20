@@ -41,7 +41,13 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/swagger-ui.html", "/swagger-ui/**", "/api-docs/**", "/actuator/health").permitAll()
+                        .requestMatchers(
+                                "/api/auth/**",
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/api-docs/**",
+                                "/actuator/health"
+                        ).permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/api/users/**").authenticated()
                         .requestMatchers("/api/users/**").hasAnyAuthority("SUPER_ADMIN", "ADMIN")
@@ -63,6 +69,27 @@ public class SecurityConfig {
                         .requestMatchers("/api/classes/**")
                         .hasAnyAuthority("SUPER_ADMIN", "ADMIN", "PEDAGOGICAL_MANAGER", "SCHOOL_MANAGER")
 
+                        .requestMatchers(HttpMethod.GET, "/api/courses/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/course-modules/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/lessons/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/course-sessions/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/course-resources/**").authenticated()
+
+                        .requestMatchers("/api/courses/**")
+                        .hasAnyAuthority("SUPER_ADMIN", "ADMIN", "PEDAGOGICAL_MANAGER", "SCHOOL_MANAGER", "TEACHER")
+
+                        .requestMatchers("/api/course-modules/**")
+                        .hasAnyAuthority("SUPER_ADMIN", "ADMIN", "PEDAGOGICAL_MANAGER", "SCHOOL_MANAGER", "TEACHER")
+
+                        .requestMatchers("/api/lessons/**")
+                        .hasAnyAuthority("SUPER_ADMIN", "ADMIN", "PEDAGOGICAL_MANAGER", "SCHOOL_MANAGER", "TEACHER")
+
+                        .requestMatchers("/api/course-sessions/**")
+                        .hasAnyAuthority("SUPER_ADMIN", "ADMIN", "PEDAGOGICAL_MANAGER", "SCHOOL_MANAGER", "TEACHER")
+
+                        .requestMatchers("/api/course-resources/**")
+                        .hasAnyAuthority("SUPER_ADMIN", "ADMIN", "PEDAGOGICAL_MANAGER", "SCHOOL_MANAGER", "TEACHER")
+
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
@@ -73,8 +100,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService);
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }

@@ -50,7 +50,8 @@ public class SecurityConfig {
                         ).permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/api/users/**").authenticated()
-                        .requestMatchers("/api/users/**").hasAnyAuthority("SUPER_ADMIN", "ADMIN")
+                        .requestMatchers("/api/users/**")
+                        .hasAnyAuthority("SUPER_ADMIN", "ADMIN")
 
                         .requestMatchers(HttpMethod.GET, "/api/academic-years/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/programs/**").authenticated()
@@ -97,6 +98,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/classes/*/students").authenticated()
                         .requestMatchers("/api/classes/*/students")
                         .hasAnyAuthority("SUPER_ADMIN", "ADMIN", "PEDAGOGICAL_MANAGER", "SCHOOL_MANAGER", "TEACHER", "SUPPORT")
+
+                        .requestMatchers(HttpMethod.GET, "/api/teachers/**").authenticated()
+                        .requestMatchers("/api/teachers/**")
+                        .hasAnyAuthority("SUPER_ADMIN", "ADMIN", "PEDAGOGICAL_MANAGER", "SCHOOL_MANAGER", "SUPPORT")
+
+                        .requestMatchers(HttpMethod.GET, "/api/programs/*/teachers").authenticated()
+                        .requestMatchers("/api/programs/*/teachers")
+                        .hasAnyAuthority("SUPER_ADMIN", "ADMIN", "PEDAGOGICAL_MANAGER", "SCHOOL_MANAGER", "SUPPORT")
 
                         .anyRequest().authenticated()
                 )

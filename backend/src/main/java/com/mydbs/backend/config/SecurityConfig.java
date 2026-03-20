@@ -90,6 +90,14 @@ public class SecurityConfig {
                         .requestMatchers("/api/course-resources/**")
                         .hasAnyAuthority("SUPER_ADMIN", "ADMIN", "PEDAGOGICAL_MANAGER", "SCHOOL_MANAGER", "TEACHER")
 
+                        .requestMatchers(HttpMethod.GET, "/api/students/**").authenticated()
+                        .requestMatchers("/api/students/**")
+                        .hasAnyAuthority("SUPER_ADMIN", "ADMIN", "PEDAGOGICAL_MANAGER", "SCHOOL_MANAGER", "SUPPORT")
+
+                        .requestMatchers(HttpMethod.GET, "/api/classes/*/students").authenticated()
+                        .requestMatchers("/api/classes/*/students")
+                        .hasAnyAuthority("SUPER_ADMIN", "ADMIN", "PEDAGOGICAL_MANAGER", "SCHOOL_MANAGER", "TEACHER", "SUPPORT")
+
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())

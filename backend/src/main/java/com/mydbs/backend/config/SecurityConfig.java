@@ -41,9 +41,28 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/swagger-ui.html", "/swagger-ui/**", "/api-docs/**", "/actuator/health").permitAll()
+
                         .requestMatchers(HttpMethod.GET, "/api/users/**").authenticated()
                         .requestMatchers("/api/users/**").hasAnyAuthority("SUPER_ADMIN", "ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/api/academic-years/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/programs/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/cohorts/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/classes/**").authenticated()
+
+                        .requestMatchers("/api/academic-years/**")
+                        .hasAnyAuthority("SUPER_ADMIN", "ADMIN", "PEDAGOGICAL_MANAGER", "SCHOOL_MANAGER")
+
+                        .requestMatchers("/api/programs/**")
+                        .hasAnyAuthority("SUPER_ADMIN", "ADMIN", "PEDAGOGICAL_MANAGER", "SCHOOL_MANAGER")
+
+                        .requestMatchers("/api/cohorts/**")
+                        .hasAnyAuthority("SUPER_ADMIN", "ADMIN", "PEDAGOGICAL_MANAGER", "SCHOOL_MANAGER")
+
+                        .requestMatchers("/api/classes/**")
+                        .hasAnyAuthority("SUPER_ADMIN", "ADMIN", "PEDAGOGICAL_MANAGER", "SCHOOL_MANAGER")
+
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
